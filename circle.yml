@@ -15,11 +15,22 @@ machine:
         From: https://developer.android.com/studio/intro/update.html#download-with-gradle
 
 dependencies:
-    pre:
-        - wget "https://services.gradle.org/distributions/gradle-2.13-bin.zip"; unzip gradle-2.13-bin.zip
+     pre:
+        # Android SDK Platform 25
+        - if [ ! -d "/usr/local/android-sdk-linux/platforms/android-26" ]; then echo y | android update sdk --no-ui --all --filter "android-26"; fi
+        # Android SDK Build-tools, revision 25.0.0
+        - if [ ! -d "/usr/local/android-sdk-linux/build-tools/26.0.2" ]; then echo y | android update sdk --no-ui --all --filter "build-tools-26.0.2"; fi
+        # Android Support Repository, revision 39 / Local Maven repository for Support Libraries
+        - if [ ! -d "/usr/local/android-sdk-linux/extras/android/m2repository/com/android/support/design/25.0.0" ]; then echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"; fi
+
+
+      cache_directories:
+        - /usr/local/android-sdk-linux/platforms/android-26
+        - /usr/local/android-sdk-linux/build-tools/26.0.2
+        - /usr/local/android-sdk-linux/extras/android/m2repository
 
     override:
-        - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-27.0.3,android-27,extra-google-m2repository,extra-google-google_play_services,extra-android-m2repository
+        - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-26.0.2,android-26,extra-google-m2repository,extra-google-google_play_services,extra-android-m2repository
         - chmod +x gradlew
         - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
 
