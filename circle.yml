@@ -3,6 +3,7 @@
 #
 
 general:
+    build_dir: /android/
     artifacts:
         - /home/ubuntu/AndroidDemo/app/build/outputs/apk/
 
