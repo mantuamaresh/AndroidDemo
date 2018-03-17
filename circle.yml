@@ -12,6 +12,7 @@ machine:
     checkout:
         post:
         - cp -r licenses/. $ANDROID_HOME/licenses
+        From: https://developer.android.com/studio/intro/update.html#download-with-gradle
 
 dependencies:
     pre:
