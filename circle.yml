@@ -20,10 +20,9 @@ dependencies:
 
 
     override:
-        - echo y | sdkmanager --licenses
         - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-27.0.3,android-27,extra-google-m2repository,extra-google-google_play_services,extra-android-m2repository
         - chmod +x gradlew
-        - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
+
 
 test:
     override:
