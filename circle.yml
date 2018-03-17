@@ -9,12 +9,16 @@ general:
 machine:
     environment:
         ANDROID_HOME: /usr/local/android-sdk-linux
+    checkout:
+        post:
+        - cp -r licenses/. $ANDROID_HOME/licenses
 
 dependencies:
     pre:
         - wget "https://services.gradle.org/distributions/gradle-2.13-bin.zip"; unzip gradle-2.13-bin.zip
+
     override:
-        - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-23.0.3,android-23,extra-google-m2repository,extra-google-google_play_services,extra-android-m2repository
+        - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-27.0.3,android-27,extra-google-m2repository,extra-google-google_play_services,extra-android-m2repository
         - chmod +x gradlew
         - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
 
@@ -24,8 +28,8 @@ test:
         - (./gradlew assemble):
             timeout: 360
         # start the emulator
-        - emulator -avd circleci-android22 -no-audio -no-window:
-            background: true
+        - emulator -avd circleci-android27 -no-audio -no-window:
+            background: false
             parallel: true
         # wait for it to have booted
         - circle-android wait-for-boot
