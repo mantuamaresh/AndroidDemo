@@ -3,6 +3,7 @@ package com.mytaxi.android_demo;
 import android.content.res.Resources;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.view.WindowManager;
 
 import com.mytaxi.android_demo.activities.MainActivity;
 
@@ -41,13 +42,21 @@ public class ExampleInstrumentedTest {
 
 
     @Before
-    public void init() {
+    public void setUp() {
         mActivity = mActivityRule.getActivity();
         resources = mActivityRule.getActivity().getResources();
         mStringUserName = "whiteelephant261";
         mStringPassword ="video";
         mSearchItem ="sa";
         mSearchKeyword = "Sarah Friedrich";
+        Runnable wakeUpDevice = new Runnable() {
+            public void run() {
+                mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            }
+        };
+        mActivity.runOnUiThread(wakeUpDevice);
 
     }
 
