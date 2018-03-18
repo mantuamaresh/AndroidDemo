@@ -25,8 +25,8 @@ test:
 
     - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
 
-    - emulator -avd circleci-android22 -no-audio -no-window:
-        background: true
+    - emulator -avd circleci-android22 -no-audio :
+        background: false
         parallel: true
 
     - circle-android wait-for-boot
@@ -34,7 +34,7 @@ test:
     - sleep 30
     - adb shell input keyevent 82
 
-    - ./gradlew connectedAndroidTest -PdisablePreDex
+    - ./gradlew connectedDevelopmentDebugAndroidTest -PdisablePreDex
     - cp -r app/build/outputs $CIRCLE_ARTIFACTS
 
     - cp -r app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS﻿
