@@ -4,15 +4,12 @@ import android.content.res.Resources;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.WindowManager;
-
 import com.mytaxi.android_demo.activities.MainActivity;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -26,25 +23,23 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.core.Is.is;
 
 /**
- * Instrumented test, which will execute on an Android device.
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ * Instrumented test, which will perform test execution on Android Device
  */
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
     private String mStringUserName,mStringPassword,mSearchItem,mSearchKeyword;
     private MainActivity mActivity = null;
-    private Resources resources;
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
             MainActivity.class);
 
-
+    /**
+     * setUp test, which will initialize the android main activity and required global var's
+     */
     @Before
     public void setUp() {
         mActivity = mActivityRule.getActivity();
-        resources = mActivityRule.getActivity().getResources();
         mStringUserName = "whiteelephant261";
         mStringPassword ="video";
         mSearchItem ="sa";
@@ -59,7 +54,11 @@ public class ExampleInstrumentedTest {
         mActivity.runOnUiThread(wakeUpDevice);
 
     }
-
+    /**
+     * mTaxiSearchDriver test, which will perform LogIn operation on MyTaxi application,
+     * Search for drivers with provided keyword,
+     * Select the driver and make call
+     */
     @Test
     public void mTaxiSearchDriver() {
         try {
@@ -79,6 +78,9 @@ public class ExampleInstrumentedTest {
         }
 
     }
+    /**
+     * tearDown test, which will Dispose all the instances after test execution completed
+     */
     @After
     public void tearDown(){
 
