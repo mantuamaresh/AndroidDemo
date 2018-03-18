@@ -1,5 +1,5 @@
 #
-# Build configuration for Circle CI test temp
+# Build configuration for Circle CI test
 #
 
 general:
@@ -7,37 +7,40 @@ general:
         - /home/ubuntu/AndroidDemo/app/build/outputs/apk/
 
 machine:
-  environment:
-    PATH: "~/$CIRCLE_PROJECT_REPONAME/gradle-2.9/bin:$PATH"
-    TERM: "dumb"
-    ADB_INSTALL_TIMEOUT: "10"
-    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
+    environment:
+        ANDROID_HOME: /usr/local/android-sdk-linux
+    checkout:
+        post:
+        - cp -r licenses/. $ANDROID_HOME/licenses
+        From: https://developer.android.com/studio/intro/update.html#download-with-gradle
 
 dependencies:
-  pre:
-    - wget "https://services.gradle.org/distributions/gradle-2.9-bin.zip"; unzip gradle-2.9-bin.zip
-    - echo y | android update sdk --no-ui --all --filter tool,extra-android-m2repository,extra-android-support,extra-google-google_play_services,extra-google-m2repository,android-24
-    - echo y | android update sdk --no-ui --all --filter build-tools-24.0.3
-    - chmod +x gradlew
+    pre:
+        - wget "https://services.gradle.org/distributions/gradle-2.13-bin.zip"; unzip gradle-2.13-bin.zip
+
+
+    override:
+        - echo y | android update sdk --no-ui --all --filter tools,platform-tools,build-tools-26.0.2,android-26,extra-google-m2repository,extra-google-google_play_services,extra-android-m2repository
+        - chmod +x gradlew
+        - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
 
 test:
-
-  override:
-    - ./gradlew build
-    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
-
-    - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
-
-    - emulator -avd circleci-android22 -no-audio -no-window:
-        background: true
-        parallel: true
-
-    - circle-android wait-for-boot
-
-    - sleep 30
-    - adb shell input keyevent 82
-
-    - ./gradlew connectedAndroidTest -PdisablePreDex
-    - cp -r app/build/outputs $CIRCLE_ARTIFACTS
-
-    - cp -r app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
+    override:
+        # start the build
+        - (./gradlew assemble):
+            timeout: 360
+        # start the emulator
+        - emulator -avd circleci-android26 -no-audio:
+            background: false
+            parallel: true
+        # wait for it to have booted
+        - circle-android wait-for-boot
+        # unlock the emulator screen
+        - sleep 30
+        - adb shell input keyevent 82
+        # run tests  against the emulator.
+        - ./gradlew connectedDevelopmentDebugAndroidTest -PdisablePreDex
+        # copy the build outputs to artifacts
+        - cp -r app/build/outputs $CIRCLE_ARTIFACTS
+        # copy the test results to the test results directory.
+        - cp -r app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
