@@ -1,7 +1,9 @@
 #
 # Build configuration for Circle CI test
 #
-
+general:
+    artifacts:
+        - "app/build/reports/androidTests/connected"
 machine:
   environment:
     PATH: "~/$CIRCLE_PROJECT_REPONAME/gradle-2.9/bin:$PATH"
@@ -34,7 +36,7 @@ test:
     - sleep 30
     - adb shell input keyevent 82
 
-    - ./gradlew connectedDevelopmentDebugAndroidTest -PdisablePreDex
+    - ./gradlew connectedAndroidTest -PdisablePreDex
     - cp -r app/build/outputs $CIRCLE_ARTIFACTS
 
     - cp -r app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS﻿
